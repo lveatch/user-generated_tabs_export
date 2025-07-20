@@ -5,8 +5,6 @@ use HTTP::Request;
 use URI::Heuristic;
 use HTML::Entities;
 use JSON;
-use JSON::MaybeXS qw(encode_json);
-use Data::Dumper;
 
 my $type = shift || die "enter type (chords, tabs, etc) for input.\n";
 $type = ucfirst($type);
@@ -16,7 +14,7 @@ my $userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_5) AppleWebKit/605.1.
 for my $pageNumber ( 1 .. 10_000) {
    my $pageText = ($pageNumber > 1) ? "page=$pageNumber&" : '';
 
-   #my $raw_url = "https://www.ultimate-guitar.com/explore?order=songname_asc&${pageText}type[]=Tabs"; 
+   #my $raw_url = "https://www.ultimate-guitar.com/explore?order=songname_asc&${pageText}type[]=$type"; 
    my $raw_url = "https://www.ultimate-guitar.com/explore?${pageText}type[]=$type"; 
    print "getting page $pageNumber ... $raw_url \n";
 
@@ -31,7 +29,6 @@ for my $pageNumber ( 1 .. 10_000) {
    
    my $webRequest = $ua->request($request);
    #print "web request = $webRequest\n";
-   #print Dumper($webRequest);
    
    if ($webRequest->is_success) {
        $webHtml =  $webRequest->decoded_content;  # or whatever
@@ -42,7 +39,6 @@ for my $pageNumber ( 1 .. 10_000) {
    
     
    my @html = split(/\n/, $webHtml);
-   #print Dumper(@html);
 
    my @sheet;
    
@@ -55,15 +51,12 @@ for my $pageNumber ( 1 .. 10_000) {
          #print "--> $rawJson\n";
    
          my @matches = ( $rawJson =~ m#(https://tabs.ultimate-guitar.com/tab/.+?)",#g );
-#        print Dumper(@matches);
    
          my $json = JSON->new->allow_nonref;
    
          my $jsonText = $json->decode( $rawJson );
    
          push @sheet,  @{ $jsonText->{'store'}->{'page'}->{'data'}->{'data'}->{'tabs'} };
-#        print Dumper($jsonText->{'store'}->{'page'}->{'data'}->{'data'});
-#        print Dumper(@sheet);
    
    
          foreach my $tabHash (@sheet) {
@@ -100,7 +93,6 @@ sub getTab
    
    my $webRequest = $uaTab->request($requestTab);
    #print "web request = $webRequest\n";
-   #print Dumper($webRequest);
    
    if ($webRequest->is_success) {
        $webHtml =  $webRequest->decoded_content;  # or whatever
@@ -111,7 +103,6 @@ sub getTab
    
     
    my @html = split(/\n/, $webHtml);
-   #print Dumper(@html);
 
    foreach my $htmlLine (@html) {
       chomp $htmlLine;
@@ -124,7 +115,6 @@ sub getTab
          my $json = JSON->new->allow_nonref;
    
          my $jsonText = $json->decode( $rawJson );
-         #print Dumper($jsonText);
          #print "$jsonText->{'store'}->{'page'}->{'data'}->{'tab_view'}->{'wiki_tab'}->{'content'}\n";
 
          my $artist = $song_ref->{'artist_name'};
@@ -132,7 +122,11 @@ sub getTab
          decode_entities($artist);
          my $song = $song_ref->{'song_name'};
          decode_entities($song);
-         my $outName = "${artist}/${song}-$song_ref->{'type_name'}.txt";
+         my $outName = "${artist}/${song}_v$song_ref->{'version'}_$song_ref->{'type_name'}.txt";
+
+#print "out name = $outName\n\n";
+#sleep 1;
+#return;
 
          mkdir "content/" unless (-e "content");
          mkdir "content/$artist" unless (-e "content/$artist");
