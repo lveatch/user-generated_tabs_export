@@ -6,7 +6,7 @@ use URI::Heuristic;
 use HTML::Entities;
 use JSON;
 
-my $type = shift || die "enter type (chords, tabs, etc) for input.\n";
+my $type = shift || die "enter type (Chords, Tabs) for input.\n";
 $type = ucfirst($type);
 
 my $userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Safari/605.1.15';
