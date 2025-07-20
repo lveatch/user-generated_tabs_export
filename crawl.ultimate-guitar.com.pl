@@ -11,7 +11,7 @@ $type = ucfirst($type);
 
 my $userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Safari/605.1.15';
 
-for my $pageNumber ( 1 .. 10_000) {
+for my $pageNumber ( 1 .. 200) {
    my $pageText = ($pageNumber > 1) ? "page=$pageNumber&" : '';
 
    #my $raw_url = "https://www.ultimate-guitar.com/explore?order=songname_asc&${pageText}type[]=$type"; 
