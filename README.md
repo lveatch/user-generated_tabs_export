@@ -1,5 +1,5 @@
 
-Will download the content from the first 10,000 pages (50 per page) of "Today's Most Popular" on the "Explore chords and tabs" page.
+Will download the content from the first 200 pages (50 per page) of "Today's Most Popular" on the "Explore chords and tabs" page.
 
 Only tested on Ubuntu.
 
