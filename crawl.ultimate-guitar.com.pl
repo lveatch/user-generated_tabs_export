@@ -124,10 +124,6 @@ sub getTab
          decode_entities($song);
          my $outName = "${artist}/${song}_v$song_ref->{'version'}_$song_ref->{'type_name'}.txt";
 
-#print "out name = $outName\n\n";
-#sleep 1;
-#return;
-
          mkdir "content/" unless (-e "content");
          mkdir "content/$artist" unless (-e "content/$artist");
 
@@ -139,7 +135,6 @@ sub getTab
          print OUT "$content\n";
          close OUT;
 
-         sleep 1;
          return;
       }
 
